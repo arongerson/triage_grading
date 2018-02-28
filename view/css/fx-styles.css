@@ -1,0 +1,57 @@
+.title-stack-pane {
+    -fx-background-color:  #4286f4;
+}
+
+.title-label {
+    -fx-text-fill: #ffffff;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #ffffff;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: red blue #ccc yellow;
+}
+
+.tab-pane {
+    -fx-tab-min-height: 50px;
+}
+
+.tab {
+    -fx-background-color: #ffffff;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab .tab-label {
+    -fx-font-size: 14px;
+}
+
+.tab:selected {
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: red blue #4286f4 yellow;
+}
+
+.tab-anchor-pane {
+    -fx-background-color: #ffffff;
+}
+
+.grade-view {
+    -fx-background-color: #ffffff;
+    -fx-border-width: 2 2 2 2;
+    -fx-border-color: #009900;
+}
+
+.grade-view-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 30px;
+    -fx-padding: 5px;
+}
+
+.grade-view-numerical-label {
+    -fx-background-color: #4286f4;
+}
+
+.grade-view-letter-label {
+    -fx-background-color: #ccc;
+}
+
