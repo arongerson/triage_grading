@@ -1,16 +1,23 @@
-package triagegrading;
+package triagegrading.view;
 
+import java.util.List;
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import triagegrading.model.Grade;
 
 public class TriageView extends BorderPane {
 
@@ -19,13 +26,57 @@ public class TriageView extends BorderPane {
     public static final double DEFAULT_ANCHOR_SPACING_FROM_CONTAINER = 10;
 
     private Label errorLabel;
-    private IntroductionTab introductionTab;
     private GraphGradeProgressTab graphGradeProgressTab;
-    private TableGradeProgressTab tableGradeProgressTab;
+    private Button clearScoreButton;
+    private Button enterScoreButton;
+    private TextField scoreTextField;
+    private Label scoreTextLabel;
 
     public TriageView() {
         super();
         init();
+    }
+    
+    public void setEnterScoreButtonActionListener(EventHandler<ActionEvent> actionEvent) {
+        enterScoreButton.setOnAction(actionEvent);
+    }
+    
+    public void setClearScoreButtonActionListener(EventHandler<ActionEvent> actionEvent) {
+        clearScoreButton.setOnAction(actionEvent);
+    }
+    
+    public void setEnterScoreTextFieldKeyListener(EventHandler<KeyEvent> keyEvent) {
+        scoreTextField.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent);
+    }
+    
+    public void setEnterScoreTextFieldChangeListener(ChangeListener<String> changeListener) {
+        scoreTextField.textProperty().addListener(changeListener);
+    }
+
+    public String getScoreTextFieldInput() {
+        return scoreTextField.getText();
+    }
+    
+    public void updateAssignmentLabel(int assignmentNumber) {
+        String label = "Assignment " + assignmentNumber + ":";
+        scoreTextLabel.setText(label);
+    }
+    
+    public void updateErrorMessage(String errorMessage) {
+        errorLabel.setText(errorMessage);
+        errorLabel.setVisible(true);
+    }
+    
+    public void updateGraph(List<Grade> grades) {
+        graphGradeProgressTab.updateLineChartGradeSeries(grades);
+    }
+    
+    public void updateNumericalLetterGrade(String numericalGrade, String letterGrade) {
+        graphGradeProgressTab.updateNumericalLetterGrade(numericalGrade, letterGrade);
+    }
+
+    public void setScoreInputText(String text) {
+        scoreTextField.setText(text);
     }
 
     private void init() {
@@ -57,25 +108,13 @@ public class TriageView extends BorderPane {
         TabPane tabPane = new TabPane();
         tabPane.getStyleClass().add("tabpane");
         tabPane.setPrefHeight(100);
-        tabPane.getTabs().add(createIntroductionTab());
         tabPane.getTabs().add(createGraphDisplayTab());
-        tabPane.getTabs().add(createTableDisplayTab());
         setCenter(tabPane);
-    }
-
-    private Tab createIntroductionTab() {
-        introductionTab = new IntroductionTab();
-        return introductionTab;
     }
 
     private Tab createGraphDisplayTab() {
         graphGradeProgressTab = new GraphGradeProgressTab();
         return graphGradeProgressTab;
-    }
-
-    private Tab createTableDisplayTab() {
-        tableGradeProgressTab = new TableGradeProgressTab();
-        return tableGradeProgressTab;
     }
 
     private void createBottomView() {
@@ -96,25 +135,47 @@ public class TriageView extends BorderPane {
     private HBox createInputHBox() {
         HBox hbox = new HBox();
         hbox.setSpacing(DEFAULT_CONTAINER_SPACING);
-        AnchorPane.setTopAnchor(hbox, DEFAULT_ANCHOR_SPACING_FROM_CONTAINER);
-        AnchorPane.setLeftAnchor(hbox, DEFAULT_ANCHOR_SPACING_FROM_CONTAINER);
+        hbox.getStyleClass().add("input-hbox");
+        hbox.getChildren().add(createAssignmentNumberLabelStackPane());
         hbox.getChildren().add(createScoreTextField());
         hbox.getChildren().add(createEnterScoreTextButton());
         return hbox;
     }
+    
+    private StackPane createAssignmentNumberLabelStackPane() {
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().add(createAssignmentNumberLabel());
+        return stackPane;
+    }
+    
+    private Label createAssignmentNumberLabel() {
+        scoreTextLabel = new Label("Assignment 1");
+        scoreTextLabel.setFont(new Font(20));
+        scoreTextLabel.setLayoutY(scoreTextLabel.getLayoutY() + 100);
+        scoreTextLabel.setAlignment(Pos.CENTER_LEFT);
+        return scoreTextLabel;
+    }
 
     private TextField createScoreTextField() {
-        TextField scoreTextField = new TextField();
+        scoreTextField = new TextField();
+        scoreTextField.setPromptText("(0 - 3)"); 
+        scoreTextField.setFont(new Font(25));
+        scoreTextField.setPrefWidth(100d);
         return scoreTextField;
     }
 
     private Button createEnterScoreTextButton() {
-        Button enterScoreButton = new Button("Enter");
+        enterScoreButton = new Button("Enter");
+        enterScoreButton.getStyleClass().add("custom-button");
+        enterScoreButton.setFont(new Font(20));
+        enterScoreButton.setAlignment(Pos.CENTER_RIGHT);
         return enterScoreButton;
     }
 
     private Button createClearButton() {
-        Button clearScoreButton = new Button("Clear");
+        clearScoreButton = new Button("Clear");
+        clearScoreButton.getStyleClass().add("custom-button");
+        clearScoreButton.setFont(new Font(20));
         AnchorPane.setTopAnchor(clearScoreButton, DEFAULT_ANCHOR_SPACING_FROM_CONTAINER);
         AnchorPane.setRightAnchor(clearScoreButton, DEFAULT_ANCHOR_SPACING_FROM_CONTAINER);
         return clearScoreButton;
@@ -122,12 +183,15 @@ public class TriageView extends BorderPane {
 
     private HBox createBottomHBox() {
         HBox hbox = new HBox();
+        hbox.setVisible(false);
+        hbox.setManaged(false); 
         hbox.getChildren().add(createErrorLabelView());
         return hbox;
     }
 
     private Label createErrorLabelView() {
-        errorLabel = new Label();
+        errorLabel = new Label("only integers between 0 and 3");
+        errorLabel.getStyleClass().add("error-label");
         return errorLabel;
     }
 }

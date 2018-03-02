@@ -38,7 +38,7 @@
 .grade-view {
     -fx-background-color: #ffffff;
     -fx-border-width: 2 2 2 2;
-    -fx-border-color: #009900;
+    -fx-border-color: #4286f4;
 }
 
 .grade-view-label {
@@ -55,3 +55,29 @@
     -fx-background-color: #ccc;
 }
 
+.text-field {
+    -fx-background-color: -fx-text-box-border, -fx-background ;
+    -fx-background-insets: 0, 0 0 1 0 ;
+    -fx-background-radius: 0 ;
+}
+.text-field:focused {
+    -fx-background-color: -fx-focus-color, -fx-background ;
+}
+
+.custom-button {
+    -fx-background-color: #174fa8;
+    -fx-text-fill: #ffffff;
+}
+
+.custom-button:hover {
+    -fx-background-color: #103b7f;
+}
+
+.error-label {
+    -fx-padding: 10 10 10 10;
+    -fx-text-fill: #e80935;
+}
+
+.input-hbox {
+    -fx-padding: 10 10 10 10;
+}

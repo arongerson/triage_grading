@@ -10,8 +10,10 @@ package triagegrading.model;
  * @author user1
  */
 public class LetterGradeCalculator {
+    
     public static final String NOT_APPLICABLE = "NA";
     private static double score;
+    
     public static String getLetterGrade(double score) {
         LetterGradeCalculator.score = score;
         if (isAPlus()) {

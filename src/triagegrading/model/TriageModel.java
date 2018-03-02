@@ -1,5 +1,6 @@
 package triagegrading.model;
 
+import triagegrading.utils.Storage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,29 +11,41 @@ public class TriageModel {
 
     public void init() throws IOException, ClassNotFoundException {
         Object data = Storage.read();
-        if (data != null) {
-            grades = (List<Grade>) Storage.read();
+        if (fileHasContent(data)) {
+            grades = (List<Grade>) data;
         }
     }
 
+    private static boolean fileHasContent(Object data) {
+        return data != null;
+    }
+
     public void saveAssignment(int score) {
-        Assignment assignment = new Assignment(nextAssignmentNumber(), score);
+        Assignment assignment = new Assignment(getNextAssignmentNumber(), score);
         Grade grade = new Grade(assignment, getTotalScore());
+        createGradeObjectIfNull();
+        grades.add(grade);
+    }
+
+    private void createGradeObjectIfNull() {
         if (grades == null) {
             grades = new ArrayList<>();
         }
-        grades.add(grade);
     }
     
     public void saveToFile() throws IOException {
         Storage.save(grades);
     }
 
-    public int nextAssignmentNumber() {
-        if (grades == null || grades.isEmpty()) {
+    public int getNextAssignmentNumber() {
+        if (!hasGradeAdded()) {
             return 1;
         }
         return grades.size() + 1;
+    }
+
+    public boolean hasGradeAdded() {
+        return !(grades == null || grades.isEmpty());
     }
     
     public int getTotalScore() {
@@ -47,7 +60,30 @@ public class TriageModel {
         grades = null;
         return Storage.clearData();
     }
+    
+    public List<Grade> getGrades() {
+        return grades;
+    }
+    
+    public double getCurrentNumericalGrade() {
+        Grade finalGrade = findLastAddedGrade();
+        return (finalGrade == null) ? 0 : finalGrade.getNumericalPercentageGrade();
+    }
+    
+    public String getCurrentLetterGrade() {
+        Grade finalGrade = findLastAddedGrade();
+        return (finalGrade == null) ? "F" : finalGrade.getLetterGrade();
+    }
 
+    public static boolean isInputLengthValid(String input) {
+        try {
+            int number = Integer.parseInt(input);
+            return number < 4;
+        } catch (NumberFormatException exception) {
+            return false;
+        }
+    }
+    
     private Grade findLastAddedGrade() {
         if (grades == null) {
             return null;

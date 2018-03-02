@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import triagegrading.model.Assignment;
-import triagegrading.model.Storage;
+import triagegrading.utils.Storage;
 
 public class StorageTest {
 
